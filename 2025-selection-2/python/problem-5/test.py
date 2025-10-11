@@ -1,13 +1,4 @@
-class A:
-    def a(self): print("A.a")
-
-class B(A):
-    def a(self):
-        print("B.a before")
-        super().a()           # A.a 호출
-        print("B.a after")
+print(eval('5+2*4'))
 
 
-a=B()
-
-a.a()
+5+2*4
