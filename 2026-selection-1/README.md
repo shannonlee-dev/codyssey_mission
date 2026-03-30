@@ -462,10 +462,7 @@ Status: Downloaded newer image for nginx:alpine
 48a5a7ae7ddeb9df2e4b78998c35579ccd7986e1617ec9d3ff9800c5b5aa9cf7
 ```
 
-- 변경 전: `Hello from custom Docker image`
-- 변경 후: `Updated from host`
 
-![docker-web-custom-initial](docs/screenshots/docker-web-custom-initial.png)
 ![docker-web-bind-before](docs/screenshots/docker-web-bind-before.png)
 ![docker-web-bind-after](docs/screenshots/docker-web-bind-after.png)
 
