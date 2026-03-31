@@ -1,2 +1,106 @@
-"""Quiz game controller for the Python quiz game mission."""
+import json
+from pathlib import Path
 
+from quiz import Quiz
+
+
+DEFAULT_QUIZ_DATA = [
+    {
+        "question": "Python의 창시자는 누구인가?",
+        "choices": ["귀도 반 로섬", "리누스 토르발스", "제임스 고슬링", "비야네 스트롭스트룹"],
+        "answer": 1,
+    },
+    {
+        "question": "Python에서 리스트를 만들 때 사용하는 기호는 무엇인가?",
+        "choices": ["{}", "[]", "()", "<>"],
+        "answer": 2,
+    },
+    {
+        "question": "조건이 참일 때만 실행 흐름을 나누는 문법은 무엇인가?",
+        "choices": ["for", "while", "if", "def"],
+        "answer": 3,
+    },
+    {
+        "question": "문자열을 숫자로 변환할 때 주로 사용하는 함수는 무엇인가?",
+        "choices": ["str()", "list()", "int()", "dict()"],
+        "answer": 3,
+    },
+    {
+        "question": "반복 가능한 객체를 순회할 때 자주 사용하는 반복문은 무엇인가?",
+        "choices": ["if", "for", "class", "try"],
+        "answer": 2,
+    },
+]
+
+
+class QuizGame:
+    def __init__(self):
+        self.state_path = Path("state.json")
+        self.quizzes = []
+        self.best_score = None
+        self.best_total_questions = None
+        self.load_state()
+
+    def build_default_quizzes(self):
+        return [Quiz.from_dict(item) for item in DEFAULT_QUIZ_DATA]
+
+    def load_state(self):
+        if not self.state_path.exists():
+            self.quizzes = self.build_default_quizzes()
+            self.best_score = None
+            self.best_total_questions = None
+            self.save_state()
+            print("📂 state.json 파일이 없어 기본 퀴즈 데이터로 시작합니다.")
+            return
+
+        try:
+            with self.state_path.open("r", encoding="utf-8") as file:
+                data = json.load(file)
+
+            if not isinstance(data, dict):
+                raise ValueError("state.json 최상위 구조가 dict가 아닙니다.")
+
+            quizzes_data = data.get("quizzes")
+            best_score = data.get("best_score")
+            best_total_questions = data.get("best_total_questions")
+
+            if not isinstance(quizzes_data, list):
+                raise ValueError("quizzes 값이 리스트가 아닙니다.")
+
+            loaded_quizzes = [Quiz.from_dict(item) for item in quizzes_data]
+
+            if best_score is not None and not isinstance(best_score, int):
+                raise ValueError("best_score 값이 정수가 아닙니다.")
+
+            if best_total_questions is not None and not isinstance(best_total_questions, int):
+                raise ValueError("best_total_questions 값이 정수가 아닙니다.")
+
+            self.quizzes = loaded_quizzes
+            self.best_score = best_score
+            self.best_total_questions = best_total_questions
+
+            print(
+                f"📂 저장된 데이터를 불러왔습니다. "
+                f"(퀴즈 {len(self.quizzes)}개, 최고 점수: {self.best_score})"
+            )
+
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
+            print("⚠️ state.json 파일이 없거나 손상되어 기본 데이터로 복구합니다.")
+            print(f"상세 원인: {error}")
+            self.quizzes = self.build_default_quizzes()
+            self.best_score = None
+            self.best_total_questions = None
+            self.save_state()
+
+    def save_state(self):
+        data = {
+            "quizzes": [quiz.to_dict() for quiz in self.quizzes],
+            "best_score": self.best_score,
+            "best_total_questions": self.best_total_questions,
+        }
+
+        try:
+            with self.state_path.open("w", encoding="utf-8") as file:
+                json.dump(data, file, ensure_ascii=False, indent=4)
+        except OSError as error:
+            print(f"⚠️ state.json 저장 중 오류가 발생했습니다: {error}")
