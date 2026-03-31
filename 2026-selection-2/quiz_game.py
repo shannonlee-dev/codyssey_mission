@@ -200,3 +200,22 @@ class QuizGame:
         else:
             print("최고 점수는 유지되었습니다.")
         print("========================================")
+
+    def add_quiz(self):
+        print()
+        print("새로운 퀴즈를 추가합니다.")
+
+        question = self.read_non_empty_text("문제를 입력하세요: ")
+
+        choices = []
+        for index in range(1, 5):
+            choice = self.read_non_empty_text(f"선택지 {index}: ")
+            choices.append(choice)
+
+        answer = self.read_int_in_range("정답 번호 (1-4): ", 1, 4)
+
+        new_quiz = Quiz(question=question, choices=choices, answer=answer)
+        self.quizzes.append(new_quiz)
+        self.save_state()
+
+        print("퀴즈가 추가되었습니다.")

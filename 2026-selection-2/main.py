@@ -10,7 +10,7 @@ def main():
         if choice == 1:
             game.play_quiz()
         elif choice == 2:
-            print("아직 구현되지 않았습니다.")
+            game.add_quiz()
         elif choice == 3:
             print("아직 구현되지 않았습니다.")
         elif choice == 4:
