@@ -34,6 +34,9 @@ DEFAULT_QUIZ_DATA = [
 
 
 class QuizGame:
+    # 기능 구분 기준: 저장, 입력 처리, 게임 진행처럼 비슷한 책임끼리 묶는다.
+
+    # 상태 초기화 영역
     # 게임 상태를 초기화한다.
     def __init__(self):
         self.state_path = Path("state.json")
@@ -42,10 +45,12 @@ class QuizGame:
         self.best_total_questions = None
         self.load_state()
 
+    # 기본 데이터 준비 영역
     # 기본 퀴즈 목록을 만든다.
     def build_default_quizzes(self):
         return [Quiz.from_dict(item) for item in DEFAULT_QUIZ_DATA]
 
+    # 파일 입출력 영역
     # 저장 파일에서 상태를 불러온다.
     def load_state(self):
         if not self.state_path.exists():
@@ -115,6 +120,7 @@ class QuizGame:
         except OSError as error:
             print(f"state.json 저장 중 오류가 발생했습니다: {error}")
 
+    # 입력 처리 영역
     # 저장 후 안전하게 종료한다.
     def safe_exit(self):
         print("\n입력이 중단되어 현재 상태를 저장한 뒤 안전하게 종료합니다.")
@@ -159,6 +165,7 @@ class QuizGame:
 
             return value
 
+    # 게임 진행 영역
     # 메인 메뉴를 출력한다.
     def show_menu(self):
         print()

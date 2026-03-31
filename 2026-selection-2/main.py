@@ -1,6 +1,7 @@
 from quiz_game import QuizGame
 
 
+# 기능 구분 기준: main.py는 시작과 연결만 맡고 실제 로직은 QuizGame에 맡긴다.
 def main():
     game = QuizGame()
 
