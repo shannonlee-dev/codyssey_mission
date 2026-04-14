@@ -18,7 +18,7 @@
 
 - `app/`
   - 실제 웹 서버가 제공할 정적 파일(`index.html`)을 분리 보관하는 디렉토리
-  - Dockerfile의 `COPY app/ /usr/share/nginx/html/`와 bind mount의 `-v $(pwd)/app:/usr/share/nginx/html`가 모두 이 디렉토리를 기준으로 동작하도록 맞췄다
+  - Dockerfile의 `COPY app/ /usr/share/nginx/html/`와 bind mount의 `-v "$(pwd -P)/app:/usr/share/nginx/html"`가 모두 이 디렉토리를 기준으로 동작하도록 맞췄다
   - 즉, **이미지 빌드용 소스와 실시간 수정 반영용 소스를 같은 기준 경로로 통일**하기 위해 `app/`를 사용했다
 
 - `docs/screenshots/`
@@ -133,7 +133,7 @@ drwxr-xr-x  2 shh921shh4393  shh921shh4393  64 Mar 30 18:32 permission-dir
 - 절대 경로는 **현재 작업 위치와 상관없이 항상 같은 위치를 정확하게 가리켜야 할 때** 적합하다
 - 상대 경로는 **프로젝트 내부에서 짧고 읽기 쉽게 경로를 표현할 때** 적합하다
 
-이번 과제에서는 설명 문서에서는 **가독성** 때문에 상대 경로를 자주 사용했고, 실제 bind mount처럼 실행 환경과 직접 연결되는 부분에서는 **정확성** 때문에 절대 경로 또는 `$(pwd)` 기반 경로를 사용했다.
+이번 과제에서는 설명 문서에서는 **가독성** 때문에 상대 경로를 자주 사용했고, 실제 bind mount처럼 실행 환경과 직접 연결되는 부분에서는 **정확성** 때문에 절대 경로 또는 `"$(pwd -P)"` 기반 경로를 사용했다.
 
 ---
 
@@ -521,7 +521,7 @@ docker run -d --name my-web -p 8080:80 my-web:1.0
 
 ```zsh
 $ docker run -d --name bind-web -p 8081:80 \
-  -v $(pwd)/app:/usr/share/nginx/html \
+  -v "$(pwd -P)/app:/usr/share/nginx/html" \
   nginx:alpine
 Unable to find image 'nginx:alpine' locally
 alpine: Pulling from library/nginx
@@ -547,7 +547,7 @@ Status: Downloaded newer image for nginx:alpine
 bind mount 실습은 포트 충돌을 피하기 위해 별도 포트를 사용했다.
 
 ```zsh
-docker run -d --name bind-web -p 8081:80 -v $(pwd)/app:/usr/share/nginx/html nginx:alpine
+docker run -d --name bind-web -p 8081:80 -v "$(pwd -P)/app:/usr/share/nginx/html" nginx:alpine
 ```
 
 이렇게 하면 `8080`은 커스텀 이미지 검증용, `8081`은 bind mount 검증용으로 역할이 분리되어 실습 목적이 섞이지 않는다.
@@ -661,7 +661,7 @@ branch 'main' set up to track 'origin/main'.
 | Docker 운영 명령 | `docker images`, `docker ps`, `docker ps -a`, `docker logs`, `docker stats` | 6장 |
 | 커스텀 이미지 | `docker build`, `docker run`, `curl` | 7장 |
 | 포트 매핑 | `-p 8080:80` + 브라우저 접속 | 8장 |
-| 바인드 마운트 | `-v $(pwd)/app:/usr/share/nginx/html` | 9장 |
+| 바인드 마운트 | `-v "$(pwd -P)/app:/usr/share/nginx/html"` | 9장 |
 | 볼륨 영속성 | `docker volume create`, `docker exec`, 컨테이너 재생성 | 10장 |
 | Git 설정 | `git config --list` | 11장 |
 | GitHub/VSCode 연동 | 연동 화면 스크린샷 | 11장 |
