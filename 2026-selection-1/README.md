@@ -670,12 +670,19 @@ branch 'main' set up to track 'origin/main'.
 
 ## 13. 트러블슈팅
 
-### 문제 1. `docker info` 실행 실패
 
-- 문제: `Cannot connect to the Docker daemon`
-- 원인 가설: Docker 엔진이 실행되지 않음
-- 확인: OrbStack 앱이 꺼져 있었음
-- 해결: OrbStack 실행 후 `docker info` 재시도
+### 문제 1. 바인드 마운트가 안 되는 문제 (`/home` 심볼릭 링크와 pwd)
+
+- 문제: `docker run -v /home/username/dev/project/app:/usr/share/nginx/html ...`로 바인드 마운트 시 컨테이너에서 파일이 보이지 않음
+- 원인 가설: macOS의 `/home`이 실제 디렉토리가 아니라 `/Users`로 연결된 심볼릭 링크라서, Docker(특히 OrbStack, Docker Desktop 등)가 내부적으로 실제 경로를 제대로 해석하지 못함
+- 확인: `ls -l /` 결과 `/home -> Users`로 심볼릭 링크임을 확인, `pwd`로 얻은 경로가 논리 경로임
+- 해결: 바인드 마운트 경로를 반드시 실제 경로(물리 경로)로 지정해야 함. `pwd -P`를 사용해 심볼릭 링크를 해제한 실제 경로를 얻고, 반드시 쌍따옴표로 감싸서 공백/특수문자 문제를 방지해야 함
+
+```zsh
+$ docker run -v "$(pwd -P)/app:/usr/share/nginx/html" ...
+```
+
+이렇게 하면 심볼릭 링크 문제로 인한 바인드 마운트 실패를 예방할 수 있다.
 
 ### 문제 2. 브라우저 접속 실패
 
