@@ -17,7 +17,12 @@ Codyssey 과제 결과물을 모아 관리하는 monorepo입니다.
 ├── 2026-selection-1/
 ├── 2026-selection-2/
 ├── 2026-selection-3/
-└── 2026-selection-term/
+├── 2026-selection-term/
+.
+.
+.
+
+
 ```
 
 ## 문서
