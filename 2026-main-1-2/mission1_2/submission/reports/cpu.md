@@ -1,17 +1,11 @@
-# [Bug] CPU 지연 - CPU 부하가 안전 임계치를 넘으면 CpuWorker 가드가 에이전트를 종료함
+# CPU 보고서 (간략)
 
-## 1. Description (현상 설명)
+## 핵심 요약
 
-CPU 케이스는 데드락 경로를 피하고 CPU 동작만 분리하기 위해 `MULTI_THREAD_ENABLE=false`로 재현했다. 에이전트는 정상적으로 시작했고 `CpuWorker`가 실행됐다. 두 구성을 비교했다:
+- `CPU_MAX_OCCUPY=100`에서는 `CpuWorker`가 임계치를 넘겨 보호 종료.
+- `CPU_MAX_OCCUPY=10`에서는 10% 도달 후 냉각 진입, 임계치 위반 없음.
 
-- 이전: `CPU_MAX_OCCUPY=100`
-- 이후: `CPU_MAX_OCCUPY=10`
-
-`CPU_MAX_OCCUPY=100`에서는 `CpuWorker` 부하가 안전 임계치를 넘어 프로세스가 종료됐다. `CPU_MAX_OCCUPY=10`에서는 작업자가 반복해서 `10.00%`에 도달한 뒤 냉각으로 들어가 위반 임계치를 넘지 않았다.
-
-## 2. Evidence & Logs (증거 자료)
-
-원본 증거:
+## 증거 경로
 
 - `runtime/evidence/cpu/cpu-max-100/app.log`
 - `runtime/evidence/cpu/cpu-max-100/ps_top.log`
@@ -19,43 +13,42 @@ CPU 케이스는 데드락 경로를 피하고 CPU 동작만 분리하기 위해
 - `runtime/evidence/cpu/cpu-max-10/ps_top.log`
 - 요약: `runtime/blocked.log`
 
-프로그램 로그 발췌:
+## 발췌
+
+`cpu-max-100/app.log`:
 
 ```text
-CPU_MAX_OCCUPY=100:
-[CpuWorker] Started. Maximum CPU Limit: 100%
-[CpuWorker] Current Load: 48.26%
-[CpuWorker] CPU Threshold Violated! (50.739999999999995%).
-
-CPU_MAX_OCCUPY=10:
-[CpuWorker] Started. Maximum CPU Limit: 10%
-[CpuWorker] Peak reached (10.00%). Starting cooldown...
+2026-05-12 12:57:50,676 [INFO] [CpuWorker] Current Load: 47.26%
+2026-05-12 12:57:53,776 [INFO] [CpuWorker] Current Load: 50.74%
+2026-05-12 12:57:53,877 [CRITICAL] [CpuWorker] CPU Threshold Violated! (50.739999999999995%).
 ```
 
-`ps_top.log`의 시스템 도구 증거는 케이스 실행 중 대상 PID와 명령을 기록한다:
+`cpu-max-10/app.log`:
 
 ```text
-PID USER     STAT %CPU %MEM   RSS COMMAND         COMMAND
-29642 maincod+ S     6.0  0.0  1920 agent-app-leak  .../agent-app-leak
+2026-05-12 12:57:19,062 [INFO] [Scheduler] Registered Tasks: ['Thread-A', 'Thread-B', 'Thread-C']
+2026-05-12 12:57:25,347 [INFO] [CpuWorker] Peak reached (10.00%). Starting cooldown...
 ```
 
-## 3. Root Cause Analysis (원인 분석)
+`cpu-max-100/ps_top.log`:
 
-CPU 이슈는 에이전트의 자체 `CpuWorker` 가드가 제어한다. 완화된 `CPU_MAX_OCCUPY=100`은 부하가 약 `50%`를 넘긴 뒤 `CPU Threshold Violated` 로그가 발생하도록 허용했다. 이는 무작위 크래시가 아니라 보호 종료 경로다.
+```text
+2026-05-12T12:57:28+09:00
+	PID USER     STAT %CPU %MEM   RSS COMMAND         COMMAND
+31985 maincod+ S     5.3  0.0  1920 agent-app-leak  /home/maincodex/harness/codex-harness/tasks/mission1_2/submission/agent-app-leak/agent-app-leak
+```
 
-`CPU_MAX_OCCUPY=10`에서는 작업자가 `10.00%`를 피크로 간주하고 냉각에 들어간다. 비교 결과 환경 변수가 작업 부하가 위반 범위로 상승하는지 여부를 바꾸는 것을 보여준다.
+## 스크린샷 증거 (시간 연관)
 
-## 4. Workaround & Verification (조치 및 검증)
+- `submission/screenshots/comman_top_before.png`
+	- `TIME+ 0:08.88` 시점에 `%CPU 1.7` 확인
+- `submission/screenshots/command_top_after.png`
+	- `TIME+ 0:08.94` 시점에 `%CPU 2.0`로 급상승
+- `submission/screenshots/command_ps.png`
+	- 동일 PID에서 `%CPU 1.7` 확인 (ps 스냅샷)
 
-우회 방법:
+## 결론
 
-- 이 테스트 환경에서는 `10`과 같은 보수적인 `CPU_MAX_OCCUPY`를 사용한다.
-- CPU 동작을 데드락 동작과 분리할 때는 `MULTI_THREAD_ENABLE=false`를 유지한다.
-
-이전 및 이후:
-
-- `CPU_MAX_OCCUPY=100`: 부하가 `50.73%`까지 올라가 `CPU Threshold Violated`가 발생.
-- `CPU_MAX_OCCUPY=10`: 부하가 `10.00%`에 도달한 뒤 관측 구간 동안 위반 로그 없이 냉각.
-
-검증 결과: PASS. `CPU_MAX_OCCUPY`에 따라 CPU 가드 동작이 달라졌고, 표준 Linux 도구로 프로세스 PID를 캡처했다.
+- CPU 가드는 설정된 임계치에 따라 정상적으로 보호 종료 또는 냉각 동작을 수행한다.
+- 동일 PID 기준으로 `TIME+ 0:08.88 -> 0:08.94` 사이에 `%CPU 1.7 -> 2.0` 상승이 관측된다.
 
