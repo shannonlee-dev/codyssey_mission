@@ -24,50 +24,6 @@ import/codyssey_mission-<가져올-경로>/<원본 브랜치>
 
 원본 `main` 브랜치는 monorepo의 `main`에 merge합니다. 필요하면 보존용 `import/.../main` 브랜치는 push 후 삭제할 수 있습니다.
 
-## 전제
-
-현재 monorepo 로컬 경로:
-
-```bash
-~/__dev/monorepo
-```
-
-임시 import 작업 경로:
-
-```bash
-~/__dev/tmp/mono-imports
-```
-
-monorepo의 GitHub 원격 이름:
-
-```bash
-origin
-```
-
-monorepo의 기본 브랜치:
-
-```bash
-main
-```
-
-가져올 원본 레포:
-
-```bash
-https://github.com/shannonlee-dev/codyssey_mission.git
-```
-
-병합 대상 레포:
-
-```bash
-https://github.com/shannonlee-dev/codyssey
-```
-
-`git-filter-repo`가 설치되어 있어야 합니다.
-
-```bash
-git filter-repo --help
-```
-
 ## 핵심 흐름
 
 ```text
@@ -101,6 +57,7 @@ export URL=https://github.com/shannonlee-dev/codyssey_mission.git
 ### 2. monorepo 상태 확인
 
 ```bash
+mkdir ~/__dev/monorepo 
 cd ~/__dev/monorepo
 git switch main
 git status
@@ -192,14 +149,19 @@ git push origin main
 git push origin "refs/heads/import/$REMOTE_NAME/*:refs/heads/import/$REMOTE_NAME/*"
 ```
 
-## 선택 사항: 원격 import main 브랜치 삭제
+## 선택 사항 cody 브랜치 비우기
+# 1. 히스토리 없는 새로운 빈 브랜치 생성
+git checkout --orphan temp
 
-원본 `main` 브랜치는 이미 monorepo의 `main`에 merge되었으므로, GitHub에서 보존용 `import/.../main` 브랜치는 삭제해도 됩니다.
+# 2. 모든 파일 스테이지에서 제거
+git rm -rf .
 
-삭제하지 않아도 문제는 없습니다.
+# 3. 빈 커밋 하나 생성
+git commit --allow-empty -m "Initial commit"
 
-삭제하려면:
+# 4. main 브랜치를 이걸로 덮어쓰기
+git branch -D main
+git branch -m main
 
-```bash
-git push origin :refs/heads/import/$REMOTE_NAME/main
-```
+# 5. 원격에 강제 push
+git push origin main --force
