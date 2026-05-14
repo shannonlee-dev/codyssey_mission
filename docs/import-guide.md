@@ -57,7 +57,7 @@ export URL=https://github.com/shannonlee-dev/codyssey_mission.git
 ### 2. monorepo 상태 확인
 
 ```bash
-mkdir ~/__dev/monorepo 
+git clone https://github.com/shannonlee-dev/Codyssey.git ~/__dev/monorepo 
 cd ~/__dev/monorepo
 git switch main
 git status
@@ -149,7 +149,38 @@ git push origin main
 git push origin "refs/heads/import/$REMOTE_NAME/*:refs/heads/import/$REMOTE_NAME/*"
 ```
 
-## 선택 사항 cody 브랜치 비우기
+## 매우 위험: 원본 레포 main을 빈 브랜치로 초기화하기
+
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+codyssey_mission에서 실행하세요
+
+
 # 1. 히스토리 없는 새로운 빈 브랜치 생성
 git checkout --orphan temp
 
