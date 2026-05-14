@@ -30,6 +30,10 @@ CPU_MAX_OCCUPY=10:
 [CpuWorker] Peak reached (10.00%). Starting cooldown...
 ```
 
+CPU 급상승 분석 그래프:
+
+![cpu spike graph](../evidence/cpu/spike/cpu_spike.png)
+
 사용률 급상승 구간 캡쳐:
 
 - 2026-05-13 20:21: `ps` 확인 (PID/리소스 스냅샷)
