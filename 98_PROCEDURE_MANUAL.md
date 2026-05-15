@@ -294,7 +294,46 @@ python3 -m budget_app --data-dir ./data update --id TX-000001 --amount 20000 --m
 [수정 완료] id=TX-000001
 ```
 
-2. 없는 거래 삭제 처리를 확인한다.
+2. 수정 결과를 목록에서 확인한다.
+
+복붙 명령어:
+```sh
+cd "$HOME/budget-work"
+python3 -m budget_app --data-dir ./data list --limit 3
+```
+
+예상 화면/출력:
+```text
+TX-000001 거래의 금액이 20000, 메모가 저녁, 태그가 meal,dinner로 표시됩니다.
+```
+
+3. 존재하는 거래 삭제 처리를 확인한다.
+
+복붙 명령어:
+```sh
+cd "$HOME/budget-work"
+python3 -m budget_app --data-dir ./data delete --id TX-000001
+```
+
+예상 화면/출력:
+```text
+[삭제 완료] id=TX-000001
+```
+
+4. 삭제 결과를 목록에서 확인한다.
+
+복붙 명령어:
+```sh
+cd "$HOME/budget-work"
+python3 -m budget_app --data-dir ./data list --limit 3
+```
+
+예상 화면/출력:
+```text
+TX-000001 거래가 더 이상 표시되지 않습니다.
+```
+
+5. 없는 거래 삭제 처리를 확인한다.
 
 복붙 명령어:
 ```sh
