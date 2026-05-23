@@ -1,4 +1,4 @@
-"""Line diff rendering for the optional Mini Git diff command."""
+"""Mini Git의 선택 diff 명령을 위한 줄 단위 차이 렌더링."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ def _red(text: str) -> str:
 
 
 def render_line_diff(left: list[str], right: list[str]) -> list[str]:
-    """Render a simple LCS-based line diff."""
+    """LCS 기반의 간단한 줄 단위 차이를 렌더링한다."""
     rows = len(left) + 1
     cols = len(right) + 1
     table = []

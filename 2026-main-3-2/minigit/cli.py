@@ -1,4 +1,4 @@
-"""Command parsing, dispatch, and REPL for Mini Git."""
+"""Mini Git의 명령 파싱, 실행 분기, REPL."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from .repository import MiniGit
 
 
 def parse_command(line: str) -> list[str] | None:
-    """Parse one REPL line with shell-like quotes."""
+    """셸과 비슷한 따옴표 규칙으로 REPL 한 줄을 파싱한다."""
     try:
         return shlex.split(line)
     except ValueError:
@@ -16,7 +16,7 @@ def parse_command(line: str) -> list[str] | None:
 
 
 def execute(repository: MiniGit, line: str) -> tuple[bool, list[str]]:
-    """Execute a single Mini Git command and return whether the REPL should continue."""
+    """Mini Git 명령 하나를 실행하고 REPL을 계속할지 여부를 반환한다."""
     parts = parse_command(line)
     if parts is None or not parts:
         return True, ["Invalid args"]
@@ -84,7 +84,7 @@ def execute(repository: MiniGit, line: str) -> tuple[bool, list[str]]:
 
 
 def repl() -> None:
-    """Run the Mini Git REPL."""
+    """Mini Git REPL을 실행한다."""
     repository = MiniGit()
     while True:
         try:

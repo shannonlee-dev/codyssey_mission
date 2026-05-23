@@ -1,4 +1,4 @@
-"""Data models for Mini Git."""
+"""Mini Git의 데이터 모델."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Commit:
-    """A commit node in the Mini Git DAG."""
+    """Mini Git DAG의 커밋 노드."""
 
     hash: str
     message: str

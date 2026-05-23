@@ -1,4 +1,4 @@
-"""Manual sorting helpers used by Mini Git."""
+"""Mini Git에서 사용하는 직접 구현 정렬 도우미."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ T = TypeVar("T")
 
 
 def compare_values(left, right) -> int:
-    """Return -1, 0, or 1 using Python comparisons without standard sorting helpers."""
+    """표준 정렬 도우미 없이 파이썬 비교로 -1, 0, 1을 반환한다."""
     if left < right:
         return -1
     if left > right:
@@ -18,7 +18,7 @@ def compare_values(left, right) -> int:
 
 
 def insertion_sort(items: list[T], key_func: Callable[[T], object]) -> list[T]:
-    """Stable insertion sort used for logs, hashes, paths, and benchmark comparison."""
+    """로그, 해시, 경로, 벤치마크 비교에 사용하는 안정 삽입 정렬."""
     result = list(items)
     index = 1
     while index < len(result):
@@ -34,7 +34,7 @@ def insertion_sort(items: list[T], key_func: Callable[[T], object]) -> list[T]:
 
 
 def merge_sort_custom(items: list[T], key_func: Callable[[T], object]) -> list[T]:
-    """Stable merge sort implemented manually for bonus timing comparisons."""
+    """보너스 시간 비교를 위해 직접 구현한 안정 병합 정렬."""
     if len(items) <= 1:
         return list(items)
     midpoint = len(items) // 2

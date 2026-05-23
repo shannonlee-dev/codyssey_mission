@@ -1,4 +1,4 @@
-"""Mini Git package."""
+"""Mini Git 패키지."""
 
 from __future__ import annotations
 

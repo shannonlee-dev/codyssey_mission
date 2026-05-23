@@ -1,4 +1,4 @@
-"""Repository state and graph operations for Mini Git."""
+"""Mini Git의 저장소 상태와 그래프 연산."""
 
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from .text_index import normalize_token, split_message_keywords
 
 
 class MiniGit:
-    """In-memory Mini Git repository with branch, commit, search, and traversal logic."""
+    """브랜치, 커밋, 검색, 순회 로직을 담은 메모리 기반 Mini Git 저장소."""
 
     def __init__(self) -> None:
         self.initialized = False
@@ -28,7 +28,7 @@ class MiniGit:
         self.next_id = 1
 
     def init(self, user_name: str) -> list[str]:
-        """Initialize or reset the in-memory repository."""
+        """메모리 기반 저장소를 초기화하거나 재설정한다."""
         self.initialized = True
         self.author = user_name
         self.current_branch = "main"
@@ -46,13 +46,13 @@ class MiniGit:
         ]
 
     def ensure_initialized(self) -> str | None:
-        """Return an error message if commands need a repository first."""
+        """명령 실행 전에 저장소가 필요하면 오류 메시지를 반환한다."""
         if not self.initialized:
             return "Repository not initialized"
         return None
 
     def create_branch(self, name: str) -> list[str]:
-        """Create a branch at the current branch head."""
+        """현재 브랜치 HEAD 위치에 브랜치를 생성한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -63,7 +63,7 @@ class MiniGit:
         return [f"Created branch: {name}"]
 
     def switch_branch(self, name: str) -> list[str]:
-        """Switch HEAD to an existing branch."""
+        """HEAD를 기존 브랜치로 전환한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -73,7 +73,7 @@ class MiniGit:
         return [f"Switched to branch: {name}"]
 
     def generate_hash(self) -> str:
-        """Generate a session-unique commit hash."""
+        """현재 세션에서 고유한 커밋 해시를 생성한다."""
         while True:
             commit_hash = f"c{self.next_id:06d}"
             self.next_id += 1
@@ -86,7 +86,7 @@ class MiniGit:
         parents: list[str] | None = None,
         prefix: str | None = None,
     ) -> list[str]: #parents, prefix는 merge 명령에서 사용하기 위한 선택적 인자입니다.
-        """Create a commit and update branch pointers plus inverted indexes."""
+        """커밋을 생성하고 브랜치 포인터와 역색인을 갱신한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -115,14 +115,14 @@ class MiniGit:
         return [f"[{shown_prefix} {commit_hash}] {message}"]
 
     def index_commit(self, commit: Commit) -> None:
-        """Update keyword and author inverted indexes for a new commit."""
+        """새 커밋에 대한 키워드와 작성자 역색인을 갱신한다."""
         author_key = normalize_token(commit.author)
         self.author_index.setdefault(author_key, []).append(commit.hash)
         for keyword in split_message_keywords(commit.message):
             self.keyword_index.setdefault(keyword, []).append(commit.hash)
 
     def refresh_branch_labels(self) -> None:
-        """Attach current branch labels to commits for display."""
+        """표시용으로 현재 브랜치 라벨을 커밋에 붙인다."""
         for commit in self.commits_by_hash.values():
             commit.branches = []
         for branch_name in self.branch_heads_by_name:
@@ -131,14 +131,14 @@ class MiniGit:
                 self.commits_by_hash[head].branches.append(branch_name)
 
     def get_ordered_commits(self) -> list[Commit]:
-        """Return commits in parent-before-child creation order."""
+        """부모가 자식보다 먼저 오는 생성 순서로 커밋을 반환한다."""
         ordered = []
         for commit_hash in self.commit_order:
             ordered.append(self.commits_by_hash[commit_hash])
         return ordered
 
     def log(self, sort_by: str | None = None) -> list[str]:
-        """Render commit log in parent-first order or by a requested direct sort."""
+        """커밋 로그를 부모 우선 순서 또는 요청된 직접 정렬 기준으로 렌더링한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -161,7 +161,7 @@ class MiniGit:
         return lines
 
     def search_keyword(self, keyword: str) -> list[str]:
-        """Search message keywords through the keyword inverted index."""
+        """키워드 역색인으로 메시지 키워드를 검색한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -169,7 +169,7 @@ class MiniGit:
         return self.render_search_results(commit_hashes)
 
     def search_author(self, author: str) -> list[str]:
-        """Search commit authors through the author inverted index."""
+        """작성자 역색인으로 커밋 작성자를 검색한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -177,7 +177,7 @@ class MiniGit:
         return self.render_search_results(commit_hashes)
 
     def render_search_results(self, commit_hashes: list[str]) -> list[str]:
-        """Render indexed search results in parent-first creation order."""
+        """색인 검색 결과를 부모 우선 생성 순서로 렌더링한다."""
         if not commit_hashes:
             return ["Found 0 commits."]
         allowed = set(commit_hashes)
@@ -192,7 +192,7 @@ class MiniGit:
         return lines
 
     def path_between(self, start: str, target: str) -> list[str]:
-        """Find a shortest undirected commit path with lexicographic path tie-break."""
+        """사전식 경로 순서로 동률을 깨며 가장 짧은 무방향 커밋 경로를 찾는다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -229,13 +229,13 @@ class MiniGit:
         return ["No path"]
 
     def neighbors(self, commit_hash: str) -> list[str]:
-        """Return lexicographically ordered undirected neighbors for a commit."""
+        """커밋의 무방향 이웃을 사전식 순서로 반환한다."""
         linked = set(self.commits_by_hash[commit_hash].parents)
         linked.update(self.children.get(commit_hash, set()))
         return insertion_sort(list(linked), lambda value: value)
 
     def ancestors(self, commit_hash: str) -> list[str]:
-        """Return every ancestor reachable through parent links."""
+        """부모 링크를 통해 도달할 수 있는 모든 조상을 반환한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -263,7 +263,7 @@ class MiniGit:
         return lines
 
     def merge(self, branch_name: str) -> list[str]:
-        """Create a merge commit with two parents: current HEAD and target branch HEAD."""
+        """현재 HEAD와 대상 브랜치 HEAD를 부모로 갖는 병합 커밋을 생성한다."""
         error = self.ensure_initialized()
         if error:
             return [error]
@@ -280,7 +280,7 @@ class MiniGit:
         return self.commit(message, parents=parents, prefix=f"merge {self.current_branch}")
 
     def diff_files(self, file1: str, file2: str) -> list[str]:
-        """Compare two text files line-by-line and mark common, deleted, and added lines."""
+        """두 텍스트 파일을 줄 단위로 비교하고 공통, 삭제, 추가 줄을 표시한다."""
         if not os.path.exists(file1) or not os.path.isfile(file1):
             return [f"Unknown file: {file1}"]
         if not os.path.exists(file2) or not os.path.isfile(file2):
@@ -292,7 +292,7 @@ class MiniGit:
         return render_line_diff(left, right)
 
     def benchmark_sorts(self, size: int) -> list[str]:
-        """Compare two manual sorting algorithms on deterministic reverse-ordered input."""
+        """결정적인 역순 입력으로 직접 구현한 두 정렬 알고리즘을 비교한다."""
         if size < 1:
             return ["Invalid args"]
         data = []

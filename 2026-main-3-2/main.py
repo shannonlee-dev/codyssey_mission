@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mini Git executable entry point."""
+"""Mini Git 실행 진입점."""
 
 from __future__ import annotations
 
