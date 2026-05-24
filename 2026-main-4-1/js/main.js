@@ -1,6 +1,8 @@
 const siteConfig = {
-  githubUsername: 'octocat',
-  githubReposEndpoint: 'https://api.github.com/users/octocat/repos',
+  githubUsername: 'shannonlee-dev',
+  githubReposEndpoint: 'https://api.github.com/users/shannonlee-dev/repos',
+  repositoryUrl: 'https://github.com/shannonlee-dev/codyssey_mission/tree/main/2026-main-4-1',
+  pagesUrl: 'https://shannonlee-dev.github.io/codyssey_mission/2026-main-4-1/',
   formspreeEndpoint: '',
   scrollTopThreshold: 300,
   navScrollThreshold: 60,
@@ -284,7 +286,7 @@ function observeSections() {
 }
 
 function runTypingEffect() {
-  const text = 'Alex Kim';
+  const text = 'Shannon Lee';
   let index = 0;
 
   elements.typingText.textContent = '';

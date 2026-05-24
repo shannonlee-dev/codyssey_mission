@@ -475,6 +475,31 @@ textarea {
   transform: translateY(0);
 }
 
+@media (max-width: 767px) {
+  .navbar {
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .logo {
+    order: 1;
+  }
+
+  .theme-toggle {
+    order: 2;
+    margin-left: auto;
+  }
+
+  .hamburger {
+    order: 3;
+    flex: 0 0 42px;
+  }
+
+  .nav-menu {
+    order: 4;
+  }
+}
+
 @media (min-width: 768px) {
   .hamburger {
     display: none;

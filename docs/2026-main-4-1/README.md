@@ -1,4 +1,4 @@
-# Alex Kim Portfolio
+# Shannon Lee Portfolio
 
 순수 HTML, CSS, JavaScript로 만든 반응형 개인 포트폴리오입니다. React, Vue, jQuery, Bootstrap, Tailwind CSS 없이 DOM 이벤트, 상태 변경, 렌더링 흐름을 직접 구현했습니다.
 
@@ -13,17 +13,16 @@
 
 ## 링크
 
-- GitHub 저장소 URL: https://github.com/octocat/portfolio-site
-- GitHub Pages 배포 URL: https://octocat.github.io/portfolio-site/
+- GitHub 저장소 URL: https://github.com/shannonlee-dev/codyssey_mission/tree/main/2026-main-4-1
+- GitHub Pages 배포 URL: https://shannonlee-dev.github.io/codyssey_mission/2026-main-4-1/
 
-실제 제출 시 위 URL은 본인 GitHub 저장소와 GitHub Pages 주소로 교체해야 합니다.
 
 ## 구현 기준
 
 - 스크롤 탑 버튼 표시 기준: 300px 이상 스크롤
 - 네비게이션 배경 변경 기준: 60px 이상 스크롤
 - Intersection Observer threshold: 0.2
-- GitHub API 엔드포인트: `https://api.github.com/users/octocat/repos`
+- GitHub API 엔드포인트: `https://api.github.com/users/shannonlee-dev/repos`
 - Formspree 실제 전송: `js/main.js`의 `formspreeEndpoint`에 본인 엔드포인트를 설정하면 활성화됩니다.
 
 ## 설계 설명
