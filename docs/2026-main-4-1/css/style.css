@@ -114,7 +114,7 @@ textarea {
   gap: var(--space-1);
   margin: 0;
   padding: var(--space-2);
-  list-style: none;
+  list-style: none; 
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -133,8 +133,7 @@ textarea {
   transition: color 160ms ease, background-color 160ms ease;
 }
 
-.nav-link:hover,
-.nav-link.active {
+.nav-link:hover {
   color: var(--color-text);
   background: color-mix(in srgb, var(--color-primary) 14%, transparent);
 }
@@ -221,8 +220,8 @@ textarea {
 }
 
 .hero-copy,
-.about p,
-.contact p {
+.about p:not(.eyebrow),
+.contact p:not(.eyebrow) {
   color: var(--color-muted);
 }
 
@@ -243,6 +242,23 @@ textarea {
   align-items: center;
   gap: var(--space-1);
   flex-wrap: wrap;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+
+.section-title-row h2 {
+  margin-bottom: 0;
+}
+
+.section-title-row .button.small {
+  min-height: 0;
+  padding-block: 0;
 }
 
 .button {
@@ -456,7 +472,7 @@ textarea {
 .social-links {
   margin: 0;
   padding: 0;
-  list-style: none;
+  list-style: none; /* 목록 앞의 점을 제거합니다. */
 }
 
 .social-links a {
@@ -475,7 +491,7 @@ textarea {
   transform: translateY(0);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 767px) {   /*화면 너비가 767px 이하일 때만 아래 CSS를 적용해라.*/
   .navbar {
     justify-content: flex-start;
     gap: 0.5rem;
@@ -487,7 +503,7 @@ textarea {
 
   .theme-toggle {
     order: 2;
-    margin-left: auto;
+    margin-left: auto;/* 왼쪽 여백을 가능한 만큼 밀어냅니다.*/
   }
 
   .hamburger {
